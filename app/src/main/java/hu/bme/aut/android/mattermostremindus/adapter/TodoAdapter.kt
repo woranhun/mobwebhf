@@ -17,8 +17,19 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         val todoItem = items[position]
 
-        holder.binding.tvName.text = todoItem.subject
-        holder.binding.ibRemove.setOnClickListener { deleteItem(todoItem) }
+        holder.binding.tvSubject.text = todoItem.subject
+        holder.binding.tvSendTo.text = todoItem.sendTo
+        holder.binding.tvPeriod.text = todoItem.periodInSecs.toString()
+        holder.binding.tvPeriodUnit.text = "seconds"
+        holder.binding.tsTodoIsOn.isChecked = todoItem.isOn
+        holder.binding.tsTodoIsOn.setOnCheckedChangeListener { _, state ->
+            listener.changeItemIsOn(
+                todoItem,
+                state
+            )
+        }
+        holder.binding.ibRemove.setOnClickListener { listener.onItemDeleted(todoItem) }
+        holder.binding.ibEdit.setOnClickListener { listener.onItemEdited(todoItem) }
     }
 
     override fun getItemCount(): Int = items.size
@@ -27,6 +38,7 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
         fun onItemChanged(item: TodoItem)
         fun onItemDeleted(item: TodoItem)
         fun onItemEdited(item: TodoItem)
+        fun changeItemIsOn(todoItem: TodoItem, state: Boolean)
     }
 
     fun addItem(item: TodoItem) {
@@ -40,9 +52,9 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
         notifyDataSetChanged()
     }
 
-    fun editItem(shoppingItem: TodoItem) {
-        val id = items.indexOf(items.find { item -> item.id == shoppingItem.id })
-        items[id] = shoppingItem
+    fun editItem(todoItem: TodoItem) {
+        val id = items.indexOf(items.find { item -> item.id == todoItem.id })
+        items[id] = todoItem
         notifyItemChanged(id)
     }
 
@@ -56,7 +68,6 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
         items.clear()
         notifyDataSetChanged()
     }
-
 
     inner class TodoViewHolder(val binding: ItemTodoListBinding) :
         RecyclerView.ViewHolder(binding.root)

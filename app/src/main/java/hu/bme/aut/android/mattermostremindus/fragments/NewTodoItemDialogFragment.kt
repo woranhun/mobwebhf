@@ -34,9 +34,9 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
         }
 
         return AlertDialog.Builder(requireContext())
-            .setTitle("Create new Todo Item")
+            .setTitle("Todo Item Editor")
             .setView(binding.root)
-            .setPositiveButton("Create") { dialogInterface, i ->
+            .setPositiveButton("Save") { dialogInterface, i ->
                 if (isValid()) {
                     if (olditem != null) {
                         val item = getShoppingItem()
@@ -57,9 +57,10 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
         subject = binding.etSubject.text.toString(),
         message = binding.etMessage.text.toString(),
         sendTo = binding.etSendTo.text.toString(),
-        periodInSecs = binding.etPeriod.text.toString().toLong()*calculateMultiplier(),
+        periodInSecs = binding.etPeriod.text.toString().toLong() * calculateMultiplier(),
         isOn = binding.tsTodoIsOn.isChecked
     )
+
     private fun calculateMultiplier(): Int {
         return 1
         //TODO("implement secs,mins,days stb...")
@@ -67,6 +68,10 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
 
     private fun loadTodoItem(item: TodoItem) {
         binding.etSubject.setText(item.subject)
+        binding.etMessage.setText(item.message)
+        binding.etSendTo.setText(item.sendTo)
+        binding.etPeriod.setText(item.periodInSecs.toString())
+        binding.tsTodoIsOn.isChecked = item.isOn
     }
 
 
