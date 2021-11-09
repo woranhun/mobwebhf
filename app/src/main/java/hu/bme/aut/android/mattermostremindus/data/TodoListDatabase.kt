@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [TodoItem::class], version = 1)
+@Database(entities = [TodoItem::class], version = 2)
 abstract class TodoListDatabase : RoomDatabase() {
     abstract fun todoItemDao(): TodoItemDao
 
@@ -15,7 +15,7 @@ abstract class TodoListDatabase : RoomDatabase() {
                 applicationContext,
                 TodoListDatabase::class.java,
                 "todo-list"
-            ).build();
+            ).fallbackToDestructiveMigration().build()
         }
     }
 }

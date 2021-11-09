@@ -17,7 +17,7 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         val todoItem = items[position]
 
-        holder.binding.tvName.text = todoItem.name
+        holder.binding.tvName.text = todoItem.subject
         holder.binding.ibRemove.setOnClickListener { deleteItem(todoItem) }
     }
 

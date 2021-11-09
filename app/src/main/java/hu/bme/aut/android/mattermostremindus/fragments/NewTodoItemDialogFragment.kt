@@ -30,7 +30,7 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogNewTodoItemBinding.inflate(LayoutInflater.from(context))
         if (olditem != null) {
-            loadShoppingItem(olditem)
+            loadTodoItem(olditem)
         }
 
         return AlertDialog.Builder(requireContext())
@@ -51,14 +51,22 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
             .create()
     }
 
-    private fun isValid() = binding.etName.text.isNotEmpty()
+    private fun isValid() = binding.etSubject.text.isNotEmpty()
 
     private fun getShoppingItem() = TodoItem(
-        name = binding.etName.text.toString()
+        subject = binding.etSubject.text.toString(),
+        message = binding.etMessage.text.toString(),
+        sendTo = binding.etSendTo.text.toString(),
+        periodInSecs = binding.etPeriod.text.toString().toLong()*calculateMultiplier(),
+        isOn = binding.tsTodoIsOn.isChecked
     )
+    private fun calculateMultiplier(): Int {
+        return 1
+        //TODO("implement secs,mins,days stb...")
+    }
 
-    private fun loadShoppingItem(item: TodoItem) {
-        binding.etName.setText(item.name)
+    private fun loadTodoItem(item: TodoItem) {
+        binding.etSubject.setText(item.subject)
     }
 
 
