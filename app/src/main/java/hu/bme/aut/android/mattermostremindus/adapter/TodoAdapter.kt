@@ -23,10 +23,8 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
         holder.binding.tvPeriodUnit.text = "seconds"
         holder.binding.tsTodoIsOn.isChecked = todoItem.isOn
         holder.binding.tsTodoIsOn.setOnCheckedChangeListener { _, state ->
-            listener.changeItemIsOn(
-                todoItem,
-                state
-            )
+            todoItem.isOn = state
+            listener.onItemChanged(todoItem)
         }
         holder.binding.ibRemove.setOnClickListener { listener.onItemDeleted(todoItem) }
         holder.binding.ibEdit.setOnClickListener { listener.onItemEdited(todoItem) }
@@ -38,7 +36,6 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
         fun onItemChanged(item: TodoItem)
         fun onItemDeleted(item: TodoItem)
         fun onItemEdited(item: TodoItem)
-        fun changeItemIsOn(todoItem: TodoItem, state: Boolean)
     }
 
     fun addItem(item: TodoItem) {
@@ -54,7 +51,8 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
 
     fun editItem(todoItem: TodoItem) {
         val id = items.indexOf(items.find { item -> item.id == todoItem.id })
-        items[id] = todoItem
+        items.removeAt(id)
+        items.add(id, todoItem)
         notifyItemChanged(id)
     }
 

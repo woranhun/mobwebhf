@@ -165,21 +165,10 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
     }
 
     override fun onItemEdited(item: TodoItem) {
-
         NewTodoItemDialogFragment(item).show(
             supportFragmentManager,
             NewTodoItemDialogFragment.TAG
         )
-    }
-
-    override fun changeItemIsOn(todoItem: TodoItem, state: Boolean) {
-        thread {
-            todoItem.isOn = state
-            database.todoItemDao().update(todoItem)
-            runOnUiThread{
-                adapter.editItem(todoItem)
-            }
-        }
     }
 
 
