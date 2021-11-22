@@ -8,13 +8,15 @@ import hu.bme.aut.android.mattermostremindus.utils.Log.Companion.logTAG
 import hu.bme.aut.android.mattermostremindus.utils.Message.Companion.messageidKEY
 
 
-class SendMessage : BroadcastReceiver() {
+class SendMessage() : BroadcastReceiver(){
     override fun onReceive(
         context: Context,
         intent: Intent
     ) {
         val messageid = intent.extras!!.get(messageidKEY)
         Log.d(logTAG, "Message just send withID: $messageid")
+        //TODO call RESTAPI HERE AND CHECK STUFFS
     }
+
 
 }

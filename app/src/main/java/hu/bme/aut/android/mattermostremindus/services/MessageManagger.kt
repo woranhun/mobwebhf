@@ -26,6 +26,7 @@ class MessageManagger : Service() {
 
     override fun onDestroy() {
         Toast.makeText(this, "MessageSender Stopped", Toast.LENGTH_LONG).show()
+        cancelAlarm(this)
         Log.d(logTAG, "onDestroy")
     }
 
@@ -39,7 +40,7 @@ class MessageManagger : Service() {
     private fun setAlarm(context: Context, alarmTime: Long, messageID: String) {
         val alarmManager: AlarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        Log.d(logTAG, "Alarm is created!")
+        Log.d(logTAG, "Alarm is created for id: $messageID !")
         val intent = Intent(context, SendMessage::class.java)
         intent.putExtra(messageidKEY, messageID)
         pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)

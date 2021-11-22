@@ -38,12 +38,17 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
             .setView(binding.root)
             .setPositiveButton("Save") { dialogInterface, i ->
                 if (isValid()) {
+                    val item = getTodoItem()
+                    if (item.isOn) {
+                        item.nextSendInMs = System.currentTimeMillis() + item.periodInMs
+                    } else {
+                        item.nextSendInMs = 0
+                    }
                     if (olditem != null) {
-                        val item = getShoppingItem()
                         item.id = olditem.id
                         listener.onTodoItemEdited(item)
                     } else {
-                        listener.onTodoItemCreated(getShoppingItem())
+                        listener.onTodoItemCreated(getTodoItem())
                     }
                 }
             }
@@ -53,16 +58,17 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
 
     private fun isValid() = binding.etSubject.text.isNotEmpty()
 
-    private fun getShoppingItem() = TodoItem(
+    private fun getTodoItem() = TodoItem(
         subject = binding.etSubject.text.toString(),
         message = binding.etMessage.text.toString(),
         sendTo = binding.etSendTo.text.toString(),
-        periodInSecs = binding.etPeriod.text.toString().toLong() * calculateMultiplier(),
+        periodInMs = binding.etPeriod.text.toString().toLong() * calculateMultiplier(),
+        nextSendInMs = 0,
         isOn = binding.tsTodoIsOn.isChecked
     )
 
     private fun calculateMultiplier(): Int {
-        return 1
+        return 1000
         //TODO("implement secs,mins,days stb...")
     }
 
@@ -70,7 +76,7 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
         binding.etSubject.setText(item.subject)
         binding.etMessage.setText(item.message)
         binding.etSendTo.setText(item.sendTo)
-        binding.etPeriod.setText(item.periodInSecs.toString())
+        binding.etPeriod.setText(item.periodInMs.toString())
         binding.tsTodoIsOn.isChecked = item.isOn
     }
 

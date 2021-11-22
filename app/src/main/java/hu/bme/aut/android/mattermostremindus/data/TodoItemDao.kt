@@ -7,6 +7,9 @@ interface TodoItemDao {
     @Query("SELECT * FROM todoitem")
     fun getAll(): List<TodoItem>
 
+    @Query("SELECT * FROM todoitem WHERE id = :itemID")
+    fun getFromID(itemID: Long): TodoItem
+
     @Insert
     fun insert(shoppingItems: TodoItem): Long
 

@@ -18,6 +18,7 @@ import hu.bme.aut.android.mattermostremindus.databinding.ActivityMainBinding
 import hu.bme.aut.android.mattermostremindus.fragments.DeleteAllDialogFragment
 import hu.bme.aut.android.mattermostremindus.fragments.NewTodoItemDialogFragment
 import hu.bme.aut.android.mattermostremindus.network.NetworkManager.getChannels
+import hu.bme.aut.android.mattermostremindus.services.MessageManagger
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MattermostRemindUs
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmApiKey
 import kotlin.concurrent.thread
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
                 NewTodoItemDialogFragment.TAG
             )
         }
+        startService(Intent(this, MessageManagger::class.java))
         initRecyclerView()
     }
 
