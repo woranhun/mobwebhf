@@ -1,4 +1,4 @@
-package hu.bme.aut.android.mattermostremindus
+package hu.bme.aut.android.mattermostremindus.activities
 
 import android.content.Context
 import android.content.Intent
@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import hu.bme.aut.android.mattermostremindus.R
 import hu.bme.aut.android.mattermostremindus.adapter.TodoAdapter
 import hu.bme.aut.android.mattermostremindus.data.TodoItem
 import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
@@ -170,6 +171,4 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
             NewTodoItemDialogFragment.TAG
         )
     }
-
-
 }

@@ -1,4 +1,4 @@
-package hu.bme.aut.android.mattermostremindus
+package hu.bme.aut.android.mattermostremindus.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,6 +12,7 @@ import hu.bme.aut.android.mattermostremindus.model.UserData
 import hu.bme.aut.android.mattermostremindus.network.NetworkManager
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MattermostRemindUs
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmApiKey
+import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmUrl
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,11 +23,18 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val previousUrl = getSharedPreferences(MattermostRemindUs, Context.MODE_PRIVATE).getString(
+            MmUrl, null
+        )
+        if (!previousUrl.isNullOrEmpty()) {
+            binding.etMmurl.setText(previousUrl.toString())
+        }
         binding.btnLogin.setOnClickListener {
             try {
                 NetworkManager.login(
                     binding.etMmusername.text.toString(),
-                    binding.etMmpassword.text.toString()
+                    binding.etMmpassword.text.toString(),
+                    binding.etMmurl.text.toString()
                 )?.enqueue(
                     object : Callback<UserData> {
                         @SuppressLint("CommitPrefEdits")
@@ -46,6 +54,7 @@ class LoginActivity : AppCompatActivity() {
                                     MattermostRemindUs,
                                     Context.MODE_PRIVATE
                                 ).edit().putString(MmApiKey, response.body()?.id)
+                                    .putString(MmUrl, binding.etMmurl.text.toString())
                                     .apply()
 
                                 finish()

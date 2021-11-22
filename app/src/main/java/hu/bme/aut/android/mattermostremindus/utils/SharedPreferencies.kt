@@ -1,9 +1,9 @@
 package hu.bme.aut.android.mattermostremindus.utils
 
 class SharedPreferencies {
-    companion object{
-        val MattermostRemindUs = "MattermostRemindUs"
-        val MmUrl = "mmUrlKey"
-        val MmApiKey = "mmApiKey"
+    companion object {
+        const val MattermostRemindUs = "MattermostRemindUs"
+        const val MmUrl = "mmUrlKey"
+        const val MmApiKey = "mmApiKey"
     }
 }
