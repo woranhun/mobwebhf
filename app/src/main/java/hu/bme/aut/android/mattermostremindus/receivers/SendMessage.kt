@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import hu.bme.aut.android.mattermostremindus.adapter.BusHolder
-import hu.bme.aut.android.mattermostremindus.adapter.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
+import hu.bme.aut.android.mattermostremindus.eventbus.BusHolder
+import hu.bme.aut.android.mattermostremindus.eventbus.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.utils.Log.Companion.logTAG
 import kotlin.concurrent.thread
 

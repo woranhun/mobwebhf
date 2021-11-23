@@ -1,4 +1,4 @@
-package hu.bme.aut.android.mattermostremindus.adapter
+package hu.bme.aut.android.mattermostremindus.eventbus
 
 import org.greenrobot.eventbus.EventBus
 
@@ -22,8 +22,5 @@ object BusHolder {
 
 }
 
-interface BusHolderListener {
-    fun onMessageSent(event: MessageSentEvent)
-}
 
-class MessageSentEvent(val todoId: Long)
+

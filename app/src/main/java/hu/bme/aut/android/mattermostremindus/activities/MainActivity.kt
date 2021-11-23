@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import hu.bme.aut.android.mattermostremindus.R
-import hu.bme.aut.android.mattermostremindus.adapter.BusHolder
-import hu.bme.aut.android.mattermostremindus.adapter.BusHolderListener
-import hu.bme.aut.android.mattermostremindus.adapter.MessageSentEvent
+import hu.bme.aut.android.mattermostremindus.eventbus.BusHolder
+import hu.bme.aut.android.mattermostremindus.eventbus.BusHolderListener
+import hu.bme.aut.android.mattermostremindus.eventbus.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.adapter.TodoAdapter
 import hu.bme.aut.android.mattermostremindus.data.TodoItem
 import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase

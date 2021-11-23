@@ -8,9 +8,9 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
-import hu.bme.aut.android.mattermostremindus.adapter.BusHolder
-import hu.bme.aut.android.mattermostremindus.adapter.BusHolderListener
-import hu.bme.aut.android.mattermostremindus.adapter.MessageSentEvent
+import hu.bme.aut.android.mattermostremindus.eventbus.BusHolder
+import hu.bme.aut.android.mattermostremindus.eventbus.BusHolderListener
+import hu.bme.aut.android.mattermostremindus.eventbus.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.data.TodoItem
 import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
 import hu.bme.aut.android.mattermostremindus.receivers.SendMessage
