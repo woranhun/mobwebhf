@@ -8,6 +8,7 @@ import hu.bme.aut.android.mattermostremindus.adapter.BusHolder
 import hu.bme.aut.android.mattermostremindus.adapter.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
 import hu.bme.aut.android.mattermostremindus.utils.Log.Companion.logTAG
+import kotlin.concurrent.thread
 
 
 class SendMessage : BroadcastReceiver() {
@@ -15,14 +16,18 @@ class SendMessage : BroadcastReceiver() {
         context: Context,
         intent: Intent
     ) {
-        val todos = TodoListDatabase.getDatabase(context).todoItemDao().getMessagesToSend(System.currentTimeMillis())
-        if (todos.isNotEmpty()) {
-            for (todo in todos) {
-                Log.d(logTAG, "Message just send withID: ${todo.id}")
-                //TODO call RESTAPI HERE AND CHECK STUFFS
-                todo!!.id?.let { MessageSentEvent(it) }?.let { BusHolder.post(it) }
+        thread {
+            val todos = TodoListDatabase.getDatabase(context).todoItemDao()
+                .getMessagesToSend(System.currentTimeMillis())
+            if (todos.isNotEmpty()) {
+                for (todo in todos) {
+                    Log.d(logTAG, "Message just send withID: ${todo.id}")
+                    //TODO call RESTAPI HERE AND CHECK STUFFS
+                    todo.id?.let { MessageSentEvent(it) }?.let { BusHolder.post(it) }
+                }
             }
         }
+
     }
 
 

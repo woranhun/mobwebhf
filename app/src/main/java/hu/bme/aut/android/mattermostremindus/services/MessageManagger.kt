@@ -22,7 +22,6 @@ import kotlin.concurrent.thread
 class MessageManagger : Service(), BusHolderListener {
     private lateinit var database: TodoListDatabase
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        //setAlarm(this, 10 * 1000L + System.currentTimeMillis(), 1)
         BusHolder.register(this)
         database = TodoListDatabase.getDatabase(this)
         calculateNextSend()
@@ -96,7 +95,7 @@ class MessageManagger : Service(), BusHolderListener {
             cancelAlarm(this)
             if (nextSendItem != null) {
                 nextSendItem.id?.let { setAlarm(this, nextSendItem.nextSendInMs) }
-                Log.d(logTAG, "Next send is: $nextSendItem.id")
+                Log.d(logTAG, "Next send is: ${nextSendItem.nextSendInMs}")
             }
         }
     }
