@@ -64,6 +64,7 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
         sendTo = binding.etSendTo.text.toString(),
         periodInMs = binding.etPeriod.text.toString().toLong() * calculateMultiplier(),
         nextSendInMs = 0,
+        previousSendInMs = -1000,
         isOn = binding.tsTodoIsOn.isChecked
     )
 

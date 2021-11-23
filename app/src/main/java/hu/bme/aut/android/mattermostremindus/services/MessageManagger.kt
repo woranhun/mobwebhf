@@ -8,15 +8,25 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import hu.bme.aut.android.mattermostremindus.adapter.BusHolder
+import hu.bme.aut.android.mattermostremindus.adapter.BusHolderListener
+import hu.bme.aut.android.mattermostremindus.adapter.MessageSentEvent
+import hu.bme.aut.android.mattermostremindus.data.TodoItem
+import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
 import hu.bme.aut.android.mattermostremindus.receivers.SendMessage
 import hu.bme.aut.android.mattermostremindus.utils.Log.Companion.logTAG
-import hu.bme.aut.android.mattermostremindus.utils.Message.Companion.messageidKEY
+import hu.bme.aut.android.mattermostremindus.utils.Message.Companion.todoidKEY
+import org.greenrobot.eventbus.Subscribe
+import kotlin.concurrent.thread
 
 
-class MessageManagger : Service() {
-
+class MessageManagger : Service(), BusHolderListener {
+    private lateinit var database: TodoListDatabase
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        setAlarm(this, 10 * 1000L + System.currentTimeMillis(), 1.toString())
+        //setAlarm(this, 10 * 1000L + System.currentTimeMillis(), 1)
+        BusHolder.register(this)
+        database = TodoListDatabase.getDatabase(this)
+        calculateNextSend()
         return START_STICKY
     }
 
@@ -27,6 +37,7 @@ class MessageManagger : Service() {
     override fun onDestroy() {
         Toast.makeText(this, "MessageSender Stopped", Toast.LENGTH_LONG).show()
         cancelAlarm(this)
+        BusHolder.unregister(this)
         Log.d(logTAG, "onDestroy")
     }
 
@@ -36,14 +47,14 @@ class MessageManagger : Service() {
     }
 
     private var pendingIntent: PendingIntent? = null
-
-    private fun setAlarm(context: Context, alarmTime: Long, messageID: String) {
+    private fun setAlarm(context: Context, alarmTime: Long, todoid: Long) {
         val alarmManager: AlarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        Log.d(logTAG, "Alarm is created for id: $messageID !")
+        Log.d(logTAG, "Alarm is created for id: $todoid with [$alarmTime]!")
         val intent = Intent(context, SendMessage::class.java)
-        intent.putExtra(messageidKEY, messageID)
+        intent.putExtra(todoidKEY, todoid)
         pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             alarmTime,
@@ -56,6 +67,39 @@ class MessageManagger : Service() {
             val alarmManager: AlarmManager =
                 context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(it)
+        }
+    }
+
+    @Subscribe
+    override fun onMessageSent(event: MessageSentEvent) {
+        thread {
+            val item = database.todoItemDao().getFromID(event.todoId)
+            if (item != null) {
+                updateNextSendTime(item)
+            }
+            calculateNextSend()
+        }
+    }
+
+    private fun updateNextSendTime(todoItem: TodoItem) {
+        val now = System.currentTimeMillis()
+        todoItem.previousSendInMs = now
+        if (todoItem.isOn) {
+            todoItem.nextSendInMs = now + todoItem.periodInMs
+        }
+        database.todoItemDao().update(todoItem)
+        Log.d(logTAG, "Next Send Time updated for ${todoItem.id} to ${todoItem.nextSendInMs}")
+
+    }
+
+    private fun calculateNextSend() {
+        thread {
+            val nextSendItem = database.todoItemDao().getNextSend()
+            cancelAlarm(this)
+            if (nextSendItem != null) {
+                nextSendItem.id?.let { setAlarm(this, nextSendItem.nextSendInMs, it) }
+                Log.d(logTAG, "Next send is: $nextSendItem.id")
+            }
         }
     }
 }

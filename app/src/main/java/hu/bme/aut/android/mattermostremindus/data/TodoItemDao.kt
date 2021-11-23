@@ -8,17 +8,20 @@ interface TodoItemDao {
     fun getAll(): List<TodoItem>
 
     @Query("SELECT * FROM todoitem WHERE id = :itemID")
-    fun getFromID(itemID: Long): TodoItem
+    fun getFromID(itemID: Long): TodoItem?
 
     @Insert
-    fun insert(shoppingItems: TodoItem): Long
+    fun insert(todoItem: TodoItem): Long
 
     @Update
-    fun update(shoppingItem: TodoItem)
+    fun update(todoItem: TodoItem)
 
     @Delete
-    fun deleteItem(shoppingItem: TodoItem)
+    fun deleteItem(todoItem: TodoItem)
 
     @Query("DELETE FROM TodoItem")
     fun deleteAll()
+
+    @Query("SELECT * FROM todoitem WHERE isOn == 1 ORDER BY nextSendInMs  LIMIT 1")
+    fun getNextSend(): TodoItem?
 }

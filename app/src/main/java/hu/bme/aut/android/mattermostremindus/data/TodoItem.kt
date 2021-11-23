@@ -12,5 +12,7 @@ data class TodoItem(
     @ColumnInfo(name = "sendTo") var sendTo: String,
     @ColumnInfo(name = "periodInMs") var periodInMs: Long,
     @ColumnInfo(name = "nextSendInMs") var nextSendInMs: Long,
+    @ColumnInfo(name = "previousSendInMs") var previousSendInMs: Long,
     @ColumnInfo(name = "isOn") var isOn: Boolean,
-)
+) {
+}

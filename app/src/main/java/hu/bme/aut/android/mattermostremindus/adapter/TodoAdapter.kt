@@ -8,7 +8,6 @@ import hu.bme.aut.android.mattermostremindus.databinding.ItemTodoListBinding
 
 class TodoAdapter(private val listener: TodoItemClickListener) :
     RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
-
     private val items = mutableListOf<TodoItem>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TodoViewHolder(
         ItemTodoListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -35,6 +34,7 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
         holder.binding.ibEdit.setOnClickListener { listener.onItemEdited(todoItem) }
     }
 
+
     override fun getItemCount(): Int = items.size
 
     interface TodoItemClickListener {
@@ -55,7 +55,7 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
     }
 
     fun editItem(todoItem: TodoItem) {
-        val id = items.indexOf(items.find { item -> item.id == todoItem.id })
+        val id = items.indexOf(todoItem.id?.let { getItemById(it) })
         items.removeAt(id)
         items.add(id, todoItem)
         notifyItemChanged(id)
@@ -70,6 +70,10 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
     fun deleteAll() {
         items.clear()
         notifyDataSetChanged()
+    }
+
+    fun getItemById(itemid: Long): TodoItem? {
+        return items.find { item -> item.id == itemid }
     }
 
     inner class TodoViewHolder(val binding: ItemTodoListBinding) :

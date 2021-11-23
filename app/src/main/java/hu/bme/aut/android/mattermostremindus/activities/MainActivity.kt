@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import hu.bme.aut.android.mattermostremindus.R
+import hu.bme.aut.android.mattermostremindus.adapter.BusHolder
+import hu.bme.aut.android.mattermostremindus.adapter.BusHolderListener
+import hu.bme.aut.android.mattermostremindus.adapter.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.adapter.TodoAdapter
 import hu.bme.aut.android.mattermostremindus.data.TodoItem
 import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
@@ -21,12 +24,13 @@ import hu.bme.aut.android.mattermostremindus.network.NetworkManager.getChannels
 import hu.bme.aut.android.mattermostremindus.services.MessageManagger
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MattermostRemindUs
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmApiKey
+import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
     NewTodoItemDialogFragment.NewTodoItemDialogListener,
-    DeleteAllDialogFragment.DeleteAllDialogListener {
+    DeleteAllDialogFragment.DeleteAllDialogListener, BusHolderListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var database: TodoListDatabase
     private lateinit var adapter: TodoAdapter
@@ -50,7 +54,13 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
             )
         }
         startService(Intent(this, MessageManagger::class.java))
+        BusHolder.register(this)
         initRecyclerView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        BusHolder.unregister(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -124,6 +134,7 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
     override fun onItemChanged(item: TodoItem) {
         thread {
             database.todoItemDao().update(item)
+            startService(Intent(this, MessageManagger::class.java))
             Log.d("Mattermost", "TodoItem update was successful")
         }
     }
@@ -172,5 +183,13 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
             supportFragmentManager,
             NewTodoItemDialogFragment.TAG
         )
+    }
+
+    @Subscribe
+    override fun onMessageSent(event: MessageSentEvent) {
+        val todoItem = adapter.getItemById(event.todoId)
+        if (todoItem != null) {
+            onTodoItemEdited(todoItem)
+        }
     }
 }
