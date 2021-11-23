@@ -1,12 +1,17 @@
 package hu.bme.aut.android.mattermostremindus.network
 
-import hu.bme.aut.android.mattermostremindus.model.Channels
-import hu.bme.aut.android.mattermostremindus.model.UserData
+import android.annotation.SuppressLint
+import android.util.Log
+import hu.bme.aut.android.mattermostremindus.model.channels.Channel
+import hu.bme.aut.android.mattermostremindus.model.channels.Channels
+import hu.bme.aut.android.mattermostremindus.model.login.User
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -23,7 +28,7 @@ object NetworkManager {
         login_id: String,
         password: String,
         mmUrl: String
-    ): Call<UserData>? {
+    ): Call<User>? {
         val json = JSONObject()
         json.put("login_id", login_id)
         json.put("password", password)
@@ -40,6 +45,95 @@ object NetworkManager {
             .addConverterFactory(GsonConverterFactory.create()).build()
         mattermostApi = retrofit.create(MattermostApi::class.java)
     }
+
+    private fun getUserByIDCaller(login_id: String, username: String): Call<User>? {
+        return mattermostApi.getUserIDByName(login_id, username)
+    }
+
+    //    private fun sendMessageToUserCaller(
+//        login_id: String,
+//        user_id: String,
+//        message: String
+//    ): Call<User>? {
+//        return mattermostApi.sendMessage(login_id, user_id, message)
+//    }
+    private fun createPrivateChannelCaller(
+        login_id: String,
+        user_id1: String,
+        user_id2: String,
+    ): Call<Channel>? {
+        val json = "[\"$user_id1\",\"$user_id2\"]"
+        val requestBody: RequestBody =
+            RequestBody.create(MediaType.parse("application/json"), json)
+        return mattermostApi.createDirectMessageChannel(login_id, requestBody)
+    }
+
+
+    fun getUsernameById(token: String, username: String, callback: Callback) {
+        if (token.isNotEmpty()) {
+            getUserByIDCaller(token, username)?.enqueue(
+                object : Callback<User> {
+                    @SuppressLint("CommitPrefEdits")
+                    override fun onResponse(
+                        call: Call<User>?,
+                        response: Response<User>?
+                    ) {
+                        if (response!!.isSuccessful) {
+                            Log.d(
+                                hu.bme.aut.android.mattermostremindus.utils.Log.logTAG,
+                                "OK--${response.body()}"
+                            )
+
+                        }
+                    }
+
+                    override fun onFailure(call: Call<User>, t: Throwable) {
+                        Log.d(hu.bme.aut.android.mattermostremindus.utils.Log.logTAG, "failure--$t")
+                    }
+                }
+            )
+        }
+    }
+
+    fun sendMessageToUser(token: String, username: String, message: String) {
+        var user1: String? = null
+        getUsernameById(token, username, { _ -> user1 = _ })
+
+        if (token.isNotEmpty()) {
+            getUserByIDCaller(token, username)?.enqueue(
+                object : Callback<User> {
+                    @SuppressLint("CommitPrefEdits")
+                    override fun onResponse(
+                        call: Call<User>?,
+                        response: Response<User>?
+                    ) {
+                        if (response!!.isSuccessful) {
+                            Log.d(
+                                hu.bme.aut.android.mattermostremindus.utils.Log.logTAG,
+                                "OK--${response.body()}"
+                            )
+                            //response.body()?.let { sendMessageToUserCaller(token, it.id, message) }
+
+
+                        }
+                    }
+
+                    override fun onFailure(call: Call<User>, t: Throwable) {
+                        Log.d(hu.bme.aut.android.mattermostremindus.utils.Log.logTAG, "failure--$t")
+                    }
+                }
+            )
+        }
+    }
+
+
+//fun sendMessage(login_id: String, toUser: String, message: String): Call<UserData>? {
+//    val json = JSONObject()
+//    json.put("login_id", login_id)
+//    val requestBody: RequestBody =
+//        RequestBody.create(MediaType.parse("application/json"), json.toString())
+//    return mattermostApi.login(requestBody)
+//}
 
     fun getChannels(
         authHeader: String?

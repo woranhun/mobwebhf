@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import hu.bme.aut.android.mattermostremindus.databinding.ActivityLoginBinding
-import hu.bme.aut.android.mattermostremindus.model.UserData
+import hu.bme.aut.android.mattermostremindus.model.login.User
 import hu.bme.aut.android.mattermostremindus.network.NetworkManager
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MattermostRemindUs
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmApiKey
@@ -36,11 +36,11 @@ class LoginActivity : AppCompatActivity() {
                     binding.etMmpassword.text.toString(),
                     binding.etMmurl.text.toString()
                 )?.enqueue(
-                    object : Callback<UserData> {
+                    object : Callback<User> {
                         @SuppressLint("CommitPrefEdits")
                         override fun onResponse(
-                            call: Call<UserData>?,
-                            response: Response<UserData>?
+                            call: Call<User>?,
+                            response: Response<User>?
                         ) {
                             if (response!!.isSuccessful) {
 
@@ -65,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                             }
                         }
 
-                        override fun onFailure(call: Call<UserData>?, t: Throwable?) {
+                        override fun onFailure(call: Call<User>?, t: Throwable?) {
                             Log.d("MatterMost", "failure--" + t.toString())
                             Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG)
                                 .show()

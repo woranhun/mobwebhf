@@ -1,6 +1,6 @@
-package hu.bme.aut.android.mattermostremindus.model
+package hu.bme.aut.android.mattermostremindus.model.login
 
-data class UserData(
+data class User(
     val auth_data: String,
     val auth_service: String,
     val create_at: Long,

@@ -1,4 +1,4 @@
-package hu.bme.aut.android.mattermostremindus.model
+package hu.bme.aut.android.mattermostremindus.model.channels
 
 data class Channel(
     val create_at: Int,

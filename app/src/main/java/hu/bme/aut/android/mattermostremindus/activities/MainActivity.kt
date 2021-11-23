@@ -11,15 +11,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import hu.bme.aut.android.mattermostremindus.R
-import hu.bme.aut.android.mattermostremindus.eventbus.BusHolder
-import hu.bme.aut.android.mattermostremindus.eventbus.BusHolderListener
-import hu.bme.aut.android.mattermostremindus.eventbus.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.adapter.TodoAdapter
 import hu.bme.aut.android.mattermostremindus.data.TodoItem
 import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
 import hu.bme.aut.android.mattermostremindus.databinding.ActivityMainBinding
+import hu.bme.aut.android.mattermostremindus.eventbus.BusHolder
+import hu.bme.aut.android.mattermostremindus.eventbus.BusHolderListener
+import hu.bme.aut.android.mattermostremindus.eventbus.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.fragments.DeleteAllDialogFragment
 import hu.bme.aut.android.mattermostremindus.fragments.NewTodoItemDialogFragment
+import hu.bme.aut.android.mattermostremindus.network.NetworkManager
 import hu.bme.aut.android.mattermostremindus.network.NetworkManager.getChannels
 import hu.bme.aut.android.mattermostremindus.services.MessageManagger
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MattermostRemindUs
@@ -89,6 +90,13 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
                     supportFragmentManager,
                     DeleteAllDialogFragment.TAG
                 )
+                true
+            }
+            R.id.Debug -> {
+                thread {
+                    NetworkManager.getUsernameById(getToken().toString(),"teszt")
+
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

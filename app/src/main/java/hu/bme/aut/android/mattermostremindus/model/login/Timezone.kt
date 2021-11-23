@@ -1,4 +1,4 @@
-package hu.bme.aut.android.mattermostremindus.model
+package hu.bme.aut.android.mattermostremindus.model.login
 
 data class Timezone(
     val automaticTimezone: String,

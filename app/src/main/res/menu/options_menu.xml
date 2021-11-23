@@ -6,4 +6,6 @@
         android:title="Logout" />
     <item android:id="@+id/DeleteAll"
         android:title="Delete All" />
+    <item android:id="@+id/Debug"
+        android:title="Debug" />
 </menu>
