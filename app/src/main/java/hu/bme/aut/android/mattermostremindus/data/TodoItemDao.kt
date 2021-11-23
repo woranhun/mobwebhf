@@ -24,4 +24,7 @@ interface TodoItemDao {
 
     @Query("SELECT * FROM todoitem WHERE isOn == 1 ORDER BY nextSendInMs  LIMIT 1")
     fun getNextSend(): TodoItem?
+
+    @Query("SELECT * FROM todoitem WHERE isOn == 1 and nextSendInMs < :now ORDER BY nextSendInMs")
+    fun getMessagesToSend(now: Long): List<TodoItem>
 }

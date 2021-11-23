@@ -15,7 +15,6 @@ import hu.bme.aut.android.mattermostremindus.data.TodoItem
 import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
 import hu.bme.aut.android.mattermostremindus.receivers.SendMessage
 import hu.bme.aut.android.mattermostremindus.utils.Log.Companion.logTAG
-import hu.bme.aut.android.mattermostremindus.utils.Message.Companion.todoidKEY
 import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.thread
 
@@ -47,12 +46,11 @@ class MessageManagger : Service(), BusHolderListener {
     }
 
     private var pendingIntent: PendingIntent? = null
-    private fun setAlarm(context: Context, alarmTime: Long, todoid: Long) {
+    private fun setAlarm(context: Context, alarmTime: Long) {
         val alarmManager: AlarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        Log.d(logTAG, "Alarm is created for id: $todoid with [$alarmTime]!")
+        Log.d(logTAG, "Alarm is created on [$alarmTime]!")
         val intent = Intent(context, SendMessage::class.java)
-        intent.putExtra(todoidKEY, todoid)
         pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
 
         alarmManager.setExact(
@@ -97,7 +95,7 @@ class MessageManagger : Service(), BusHolderListener {
             val nextSendItem = database.todoItemDao().getNextSend()
             cancelAlarm(this)
             if (nextSendItem != null) {
-                nextSendItem.id?.let { setAlarm(this, nextSendItem.nextSendInMs, it) }
+                nextSendItem.id?.let { setAlarm(this, nextSendItem.nextSendInMs) }
                 Log.d(logTAG, "Next send is: $nextSendItem.id")
             }
         }
