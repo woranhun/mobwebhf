@@ -8,11 +8,11 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
+import hu.bme.aut.android.mattermostremindus.data.TodoItem
+import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
 import hu.bme.aut.android.mattermostremindus.eventbus.BusHolder
 import hu.bme.aut.android.mattermostremindus.eventbus.BusHolderListener
 import hu.bme.aut.android.mattermostremindus.eventbus.MessageSentEvent
-import hu.bme.aut.android.mattermostremindus.data.TodoItem
-import hu.bme.aut.android.mattermostremindus.data.TodoListDatabase
 import hu.bme.aut.android.mattermostremindus.receivers.SendMessage
 import hu.bme.aut.android.mattermostremindus.utils.Log.Companion.logTAG
 import org.greenrobot.eventbus.Subscribe
@@ -86,7 +86,6 @@ class MessageManagger : Service(), BusHolderListener {
         }
         database.todoItemDao().update(todoItem)
         Log.d(logTAG, "Next Send Time updated for ${todoItem.id} to ${todoItem.nextSendInMs}")
-
     }
 
     private fun calculateNextSend() {

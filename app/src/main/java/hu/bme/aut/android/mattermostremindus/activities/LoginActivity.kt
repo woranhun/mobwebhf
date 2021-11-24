@@ -10,8 +10,10 @@ import com.google.android.material.snackbar.Snackbar
 import hu.bme.aut.android.mattermostremindus.databinding.ActivityLoginBinding
 import hu.bme.aut.android.mattermostremindus.model.login.User
 import hu.bme.aut.android.mattermostremindus.network.NetworkManager
+import hu.bme.aut.android.mattermostremindus.utils.Log.Companion.logTAG
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MattermostRemindUs
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmApiKey
+import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmMyUser
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmUrl
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,8 +35,8 @@ class LoginActivity : AppCompatActivity() {
             try {
                 NetworkManager.login(
                     binding.etMmusername.text.toString(),
+                    binding.etMmurl.text.toString(),
                     binding.etMmpassword.text.toString(),
-                    binding.etMmurl.text.toString()
                 )?.enqueue(
                     object : Callback<User> {
                         @SuppressLint("CommitPrefEdits")
@@ -49,30 +51,31 @@ class LoginActivity : AppCompatActivity() {
                                     "Successful Login",
                                     Toast.LENGTH_LONG
                                 ).show()
-                                Log.d("MatterMost", "ok--" + response.body().toString())
+                                Log.d(logTAG, "ok--" + response.body().toString())
                                 getSharedPreferences(
                                     MattermostRemindUs,
                                     Context.MODE_PRIVATE
-                                ).edit().putString(MmApiKey, response.body()?.id)
+                                ).edit().putString(MmApiKey, response.headers().get("Token"))
                                     .putString(MmUrl, binding.etMmurl.text.toString())
+                                    .putString(MmMyUser, binding.etMmusername.text.toString())
                                     .apply()
 
                                 finish()
                             }
                             if (response.code() in 400..499) {
                                 Snackbar.make(binding.root, "Login Failed", 2000).show()
-                                Log.d("MatterMost", "failure--$response")
+                                Log.d(logTAG, "failure--$response")
                             }
                         }
 
                         override fun onFailure(call: Call<User>?, t: Throwable?) {
-                            Log.d("MatterMost", "failure--" + t.toString())
+                            Log.d(logTAG, "failure--" + t.toString())
                             Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG)
                                 .show()
                         }
                     })
             } catch (e: Exception) {
-                Log.d("MatterMost", e.toString())
+                Log.d(logTAG, e.toString())
             }
         }
     }

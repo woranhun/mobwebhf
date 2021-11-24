@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import hu.bme.aut.android.mattermostremindus.R
 import hu.bme.aut.android.mattermostremindus.adapter.TodoAdapter
 import hu.bme.aut.android.mattermostremindus.data.TodoItem
@@ -21,10 +20,11 @@ import hu.bme.aut.android.mattermostremindus.eventbus.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.fragments.DeleteAllDialogFragment
 import hu.bme.aut.android.mattermostremindus.fragments.NewTodoItemDialogFragment
 import hu.bme.aut.android.mattermostremindus.network.NetworkManager
-import hu.bme.aut.android.mattermostremindus.network.NetworkManager.getChannels
 import hu.bme.aut.android.mattermostremindus.services.MessageManagger
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MattermostRemindUs
 import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmApiKey
+import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmMyUser
+import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmUrl
 import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.thread
 
@@ -94,7 +94,13 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
             }
             R.id.Debug -> {
                 thread {
-                    NetworkManager.getUsernameById(getToken().toString(),"teszt")
+                    NetworkManager.sendMessageToUser(
+                        getToken().toString(),
+                        getUrl().toString(),
+                        getMyUser().toString(),
+                        "teszt",
+                        "Hello from Android!"
+                    )
 
                 }
                 true
@@ -122,14 +128,28 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
 
     override fun onResume() {
         super.onResume()
-        if (getChannels(getToken())?.count() == 0) {
-            Snackbar.make(binding.root, "Login Expired!", 2000).show()
-        }
+//        if (getChannels(getToken())?.count() == 0) {
+//            Snackbar.make(binding.root, "Login Expired!", 2000).show()
+//        }
     }
 
     private fun getToken(): String? {
         return getSharedPreferences(MattermostRemindUs, Context.MODE_PRIVATE).getString(
             MmApiKey,
+            null
+        )
+    }
+
+    private fun getUrl(): String? {
+        return getSharedPreferences(MattermostRemindUs, Context.MODE_PRIVATE).getString(
+            MmUrl,
+            null
+        )
+    }
+
+    private fun getMyUser(): String? {
+        return getSharedPreferences(MattermostRemindUs, Context.MODE_PRIVATE).getString(
+            MmMyUser,
             null
         )
     }
