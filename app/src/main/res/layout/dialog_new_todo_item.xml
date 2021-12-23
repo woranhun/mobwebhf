@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name: " />
+        android:text="@string/name" />
 
     <EditText
         android:id="@+id/et_subject"
@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Message: " />
+        android:text="@string/message" />
 
     <EditText
         android:id="@+id/et_message"
@@ -28,7 +28,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send To: " />
+        android:text="@string/send_to" />
 
     <EditText
         android:id="@+id/et_send_to"
@@ -38,18 +38,33 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Period: " />
+        android:text="@string/period" />
 
-    <EditText
-        android:id="@+id/et_period"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="numberDecimal" />
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <EditText
+            android:id="@+id/et_period"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:inputType="numberDecimal" />
+
+        <Spinner
+            android:id="@+id/sp_multiplier"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="On / Off: " />
+        android:text="@string/on_off" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/tsTodoIsOn"

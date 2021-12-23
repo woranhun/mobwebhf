@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="16dp"
-        android:text="Please enter your Mattermost credentials" />
+        android:text="@string/please_enter_your_mattermost_credentials" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mattermost URL" />
+        android:text="@string/mattermost_url" />
 
     <EditText
         android:id="@+id/etMmurl"
@@ -27,7 +27,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mattermost username" />
+        android:text="@string/mattermost_username" />
 
     <EditText
         android:id="@+id/etMmusername"
@@ -37,7 +37,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mattermost Password" />
+        android:text="@string/mattermost_password" />
 
     <EditText
         android:id="@+id/etMmpassword"
@@ -50,6 +50,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Login" />
+        android:text="@string/login" />
 
 </LinearLayout>

@@ -3,7 +3,6 @@ package hu.bme.aut.android.mattermostremindus.network
 import android.annotation.SuppressLint
 import android.util.Log
 import hu.bme.aut.android.mattermostremindus.model.channels.Channel
-import hu.bme.aut.android.mattermostremindus.model.channels.Channels
 import hu.bme.aut.android.mattermostremindus.model.login.User
 import hu.bme.aut.android.mattermostremindus.model.post.Post
 import hu.bme.aut.android.mattermostremindus.utils.Log.Companion.logTAG
@@ -16,15 +15,13 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.reflect.KFunction1
 
 object NetworkManager {
     private var retrofit: Retrofit? = null
     private var mattermostApi: MattermostApi? = null
 
-    //private const val SERVICE_URL = "https://mattermost.kszk.bme.hu"
     //private const val SERVICE_URL = "http://172.17.0.1:8065"
-    //teszt - teszt
-    //teszt2 - teszt2
 
     fun login(
         login_id: String,
@@ -41,7 +38,7 @@ object NetworkManager {
     }
 
     private fun init(url: String) {
-        if (retrofit == null) {
+        if (retrofit == null || retrofit!!.baseUrl().toString() != url) {
             retrofit = Retrofit.Builder()
                 .baseUrl(url)
                 .client(OkHttpClient.Builder().build())
@@ -126,15 +123,17 @@ object NetworkManager {
         mmUrl: String,
         myUser: String,
         username: String,
-        message: String
+        message: String,
+        todoID: Long,
+        callback: KFunction1<Long, Unit>
     ) {
-        var user1id: String? = null
+        var user1id: String?
         var user2id: String? = null
-        var createdchannelid: String? = null
+        var createdchannelid: String?
 
         fun setCreatedChannel(id: String) {
             createdchannelid = id
-            sendMessage(token, mmUrl, message, createdchannelid)
+            sendMessage(token, mmUrl, message, createdchannelid, todoID, callback)
         }
 
         fun setuser1(id: String) {
@@ -155,7 +154,9 @@ object NetworkManager {
         token: String,
         mmUrl: String,
         message: String,
-        createdchannelid: String?
+        createdchannelid: String?,
+        todoID: Long,
+        callback: KFunction1<Long, Unit>
     ) {
         if (token.isNotEmpty()) {
             if (createdchannelid != null) {
@@ -171,6 +172,7 @@ object NetworkManager {
                                     logTAG,
                                     "OK--${response.body()}"
                                 )
+                                callback(todoID)
                             } else {
                                 Log.d(
                                     logTAG,
@@ -234,39 +236,5 @@ object NetworkManager {
             }
         }
 
-    }
-
-    fun getChannels(
-        authHeader: String,
-        mmUrl: String,
-    ): Array<Channels>? {
-//        return if(authHeader.isNullOrEmpty()) null
-//        else{
-//            mattermostApi.getChannels(authHeader).enqueue(
-//                object : Callback<Channels> {
-//                    @SuppressLint("CommitPrefEdits")
-//                    override fun onResponse(
-//                        call: Call<Channels>?,
-//                        response: Response<Channels>?
-//                    ) {
-//                        if (response!!.isSuccessful) {
-//
-//                            return
-//                        }
-//                    }
-//
-//                    override fun onFailure(call: Call<UserData>?, t: Throwable?) {
-//                        Log.d("MatterMost", "failure--" + t.toString())
-//                        Toast.makeText(applicationContext, "Error", Toast.LENGTH_LONG)
-//                            .show()
-//                    }
-//
-//                    override fun onFailure(call: Call<Channels>, t: Throwable) {
-//                        return null
-//                    }
-//                })
-//            return data
-//        }
-        return null
     }
 }

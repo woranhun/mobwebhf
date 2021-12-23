@@ -18,8 +18,9 @@ class TodoAdapter(private val listener: TodoItemClickListener) :
 
         holder.binding.tvSubject.text = todoItem.subject
         holder.binding.tvSendTo.text = todoItem.sendTo
-        holder.binding.tvPeriod.text = todoItem.periodInMs.toString()
-        holder.binding.tvPeriodUnit.text = "miliseconds"
+        holder.binding.tvPeriod.text =
+            (todoItem.periodInMs / TodoItem.IntervalMultiplier.toLong(todoItem.intervalMultiplier)).toString()
+        holder.binding.tvPeriodUnit.text = todoItem.intervalMultiplier.toString()
         holder.binding.tsTodoIsOn.isChecked = todoItem.isOn
         holder.binding.tsTodoIsOn.setOnCheckedChangeListener { _, state ->
             todoItem.isOn = state

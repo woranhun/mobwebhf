@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/Login"
-        android:title="Login" />
+        android:title="@string/login" />
     <item android:id="@+id/Logout"
-        android:title="Logout" />
+        android:title="@string/logout" />
     <item android:id="@+id/DeleteAll"
-        android:title="Delete All" />
-    <item android:id="@+id/Debug"
-        android:title="Debug" />
+        android:title="@string/delete_all" />
 </menu>

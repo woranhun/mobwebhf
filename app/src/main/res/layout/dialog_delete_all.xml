@@ -8,6 +8,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Should we delete it?" />
+        android:text="@string/should_we_delete_it" />
 
 </LinearLayout>

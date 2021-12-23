@@ -13,12 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MattermostRemindUs"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="false">
         <service
             android:name=".services.MessageManagger"
             android:enabled="true"
             android:exported="false" />
-        <!-- TODO Remove in prod -->
         <activity
             android:name=".activities.MainActivity"
             android:exported="true">

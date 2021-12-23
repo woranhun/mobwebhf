@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Mattermost Remind Us</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="delete_all">Delete All</string>
+    <string name="name">Name:</string>
+    <string name="message">Message:</string>
+    <string name="send_to">Send To:</string>
+    <string name="period">Period:</string>
+    <string name="on_off">On / Off:</string>
+    <string name="should_we_delete_it">Should we delete it?</string>
+    <string name="please_enter_your_mattermost_credentials">Please enter your Mattermost credentials</string>
+    <string name="mattermost_url">Mattermost URL</string>
+    <string name="mattermost_username">Mattermost username</string>
+    <string name="mattermost_password">Mattermost Password</string>
 </resources>

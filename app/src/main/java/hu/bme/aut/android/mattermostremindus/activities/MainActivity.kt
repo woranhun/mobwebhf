@@ -1,6 +1,5 @@
 package hu.bme.aut.android.mattermostremindus.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -19,12 +18,8 @@ import hu.bme.aut.android.mattermostremindus.eventbus.BusHolderListener
 import hu.bme.aut.android.mattermostremindus.eventbus.MessageSentEvent
 import hu.bme.aut.android.mattermostremindus.fragments.DeleteAllDialogFragment
 import hu.bme.aut.android.mattermostremindus.fragments.NewTodoItemDialogFragment
-import hu.bme.aut.android.mattermostremindus.network.NetworkManager
 import hu.bme.aut.android.mattermostremindus.services.MessageManagger
-import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MattermostRemindUs
-import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmApiKey
-import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmMyUser
-import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies.Companion.MmUrl
+import hu.bme.aut.android.mattermostremindus.utils.SharedPreferencies
 import org.greenrobot.eventbus.Subscribe
 import kotlin.concurrent.thread
 
@@ -44,7 +39,7 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
         database = TodoListDatabase.getDatabase(applicationContext)
 
 
-        if (getToken().isNullOrEmpty()) {
+        if (SharedPreferencies.getToken(applicationContext).isNullOrEmpty()) {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
@@ -77,8 +72,8 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
                 true
             }
             R.id.Logout -> {
-                removeToken()
-                if (getToken().isNullOrEmpty()) Toast.makeText(
+                SharedPreferencies.removeToken(applicationContext)
+                if (SharedPreferencies.getToken(applicationContext).isNullOrEmpty()) Toast.makeText(
                     applicationContext,
                     "Successful Logout",
                     Toast.LENGTH_LONG
@@ -90,19 +85,6 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
                     supportFragmentManager,
                     DeleteAllDialogFragment.TAG
                 )
-                true
-            }
-            R.id.Debug -> {
-                thread {
-                    NetworkManager.sendMessageToUser(
-                        getToken().toString(),
-                        getUrl().toString(),
-                        getMyUser().toString(),
-                        "teszt",
-                        "Hello from Android!"
-                    )
-
-                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -123,40 +105,6 @@ class MainActivity : AppCompatActivity(), TodoAdapter.TodoItemClickListener,
                 adapter.update(items)
             }
         }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-//        if (getChannels(getToken())?.count() == 0) {
-//            Snackbar.make(binding.root, "Login Expired!", 2000).show()
-//        }
-    }
-
-    private fun getToken(): String? {
-        return getSharedPreferences(MattermostRemindUs, Context.MODE_PRIVATE).getString(
-            MmApiKey,
-            null
-        )
-    }
-
-    private fun getUrl(): String? {
-        return getSharedPreferences(MattermostRemindUs, Context.MODE_PRIVATE).getString(
-            MmUrl,
-            null
-        )
-    }
-
-    private fun getMyUser(): String? {
-        return getSharedPreferences(MattermostRemindUs, Context.MODE_PRIVATE).getString(
-            MmMyUser,
-            null
-        )
-    }
-
-    private fun removeToken() {
-        getSharedPreferences(MattermostRemindUs, Context.MODE_PRIVATE).edit()
-            .putString(MmApiKey, null).apply()
     }
 
     override fun onItemChanged(item: TodoItem) {

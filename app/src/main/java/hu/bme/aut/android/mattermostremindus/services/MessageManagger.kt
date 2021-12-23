@@ -21,10 +21,12 @@ import kotlin.concurrent.thread
 
 class MessageManagger : Service(), BusHolderListener {
     private lateinit var database: TodoListDatabase
+    private var context: Context? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         BusHolder.register(this)
         database = TodoListDatabase.getDatabase(this)
         calculateNextSend()
+        if (context == null) context = applicationContext
         return START_STICKY
     }
 

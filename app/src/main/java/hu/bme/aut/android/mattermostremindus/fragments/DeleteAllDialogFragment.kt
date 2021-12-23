@@ -30,7 +30,7 @@ class DeleteAllDialogFragment() : DialogFragment() {
         return AlertDialog.Builder(requireContext())
             .setTitle("Delete All")
             .setView(binding.root)
-            .setPositiveButton("Ok") { dialogInterface, i ->
+            .setPositiveButton("Ok") { _, _ ->
                 listener.onDeleteAll()
             }
             .setNegativeButton("Cancel", null)

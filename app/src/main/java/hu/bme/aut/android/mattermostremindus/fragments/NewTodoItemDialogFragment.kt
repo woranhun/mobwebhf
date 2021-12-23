@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import hu.bme.aut.android.mattermostremindus.data.TodoItem
@@ -29,6 +30,14 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogNewTodoItemBinding.inflate(LayoutInflater.from(context))
+        binding.spMultiplier.adapter =
+            context?.let {
+                ArrayAdapter(
+                    it,
+                    android.R.layout.simple_spinner_item,
+                    TodoItem.IntervalMultiplier.values()
+                )
+            }
         if (olditem != null) {
             loadTodoItem(olditem)
         }
@@ -36,7 +45,7 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
         return AlertDialog.Builder(requireContext())
             .setTitle("Todo Item Editor")
             .setView(binding.root)
-            .setPositiveButton("Save") { dialogInterface, i ->
+            .setPositiveButton("Save") { _, _ ->
                 if (isValid()) {
                     val item = getTodoItem()
                     if (item.isOn) {
@@ -62,23 +71,28 @@ class NewTodoItemDialogFragment(private val olditem: TodoItem?) : DialogFragment
         subject = binding.etSubject.text.toString(),
         message = binding.etMessage.text.toString(),
         sendTo = binding.etSendTo.text.toString(),
-        periodInMs = binding.etPeriod.text.toString().toLong() * calculateMultiplier(),
+        periodInMs = binding.etPeriod.text.toString().toLong() * TodoItem.IntervalMultiplier.toLong(
+            binding.spMultiplier.selectedItem as TodoItem.IntervalMultiplier
+        ),
         nextSendInMs = 0,
         previousSendInMs = -1000,
+        intervalMultiplier = binding.spMultiplier.selectedItem as TodoItem.IntervalMultiplier,
         isOn = binding.tsTodoIsOn.isChecked
     )
-
-    private fun calculateMultiplier(): Int {
-        return 1000
-        //TODO("implement secs,mins,days stb...")
-    }
 
     private fun loadTodoItem(item: TodoItem) {
         binding.etSubject.setText(item.subject)
         binding.etMessage.setText(item.message)
         binding.etSendTo.setText(item.sendTo)
-        binding.etPeriod.setText(item.periodInMs.toString())
+        binding.etPeriod.setText(
+            (item.periodInMs / TodoItem.IntervalMultiplier.toLong(item.intervalMultiplier)).toString()
+        )
         binding.tsTodoIsOn.isChecked = item.isOn
+        binding.spMultiplier.post {
+            binding.spMultiplier.setSelection(
+                TodoItem.IntervalMultiplier.values().indexOf(item.intervalMultiplier)
+            )
+        }
     }
 
 
